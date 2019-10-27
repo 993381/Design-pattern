@@ -1,0 +1,59 @@
+﻿<h1 id="_label0">1 Interpreter</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Context</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Context(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Context::Context"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~Context(){}
+};
+
+<span class="hljs-comment">// interpret</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractExpression</span>&nbsp;
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~AbstractExpression(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Interpret</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Context &amp;ct)</span></span>{}
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractExpression(){}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TerminalExpression</span> :</span> <span class="hljs-keyword">public</span> AbstractExpression
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; TerminalExpression(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span>&amp;statement){_statement = statement;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~TerminalExpression(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Interpret</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Context &amp;ct)</span></span>{<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"TerminalExpression :: Interpret()"</span>&lt;&lt;<span class="hljs-keyword">this</span>-&gt;_statement&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> _statement;
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NonterminalExpression</span> :</span> <span class="hljs-keyword">public</span> AbstractExpression&nbsp;
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; NonterminalExpression(AbstractExpression *expression, <span class="hljs-keyword">int</span> times){
+
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">this</span>-&gt;_expression = expression;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">this</span>-&gt;_times = times;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; ~NonterminalExpression(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Interpret</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Context&amp; ct)</span></span>;
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractExpression* _expression;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">int</span> _times;
+};
+
+<span class="hljs-keyword">void</span> NonterminalExpression::Interpret(<span class="hljs-keyword">const</span> Context&amp; ct)
+{
+&nbsp; &nbsp; <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; _times; i++)&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; _expression-&gt;Interpret(ct);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; Context* ct = <span class="hljs-keyword">new</span> Context();
+&nbsp; &nbsp; AbstractExpression *te = <span class="hljs-keyword">new</span> TerminalExpression(<span class="hljs-string">" hello"</span>);
+&nbsp; &nbsp; AbstractExpression *nte = <span class="hljs-keyword">new</span> NonterminalExpression(te, <span class="hljs-number">3</span>);
+&nbsp; &nbsp; nte-&gt;Interpret(*ct);
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

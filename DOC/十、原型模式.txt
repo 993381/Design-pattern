@@ -1,0 +1,53 @@
+﻿<h1 id="_label0">1 prototype</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Prototype</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Prototype(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> Prototype *<span class="hljs-title">Clone</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">int</span> number;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Prototype()
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; number = <span class="hljs-number">100</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Prototype"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+};
+
+Prototype *Prototype::Clone() <span class="hljs-keyword">const</span>
+{
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcretePrototype</span> :</span> <span class="hljs-keyword">public</span> Prototype
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcretePrototype() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcretePrototype"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ConcretePrototype(<span class="hljs-keyword">const</span> ConcretePrototype &amp;cp) {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcretePrototype Copy"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcretePrototype(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ConcretePrototype"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">Prototype *<span class="hljs-title">Clone</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>;
+};
+
+Prototype *ConcretePrototype::Clone() <span class="hljs-keyword">const</span>
+{
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Prototype :: Clone()"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ConcretePrototype(*<span class="hljs-keyword">this</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; Prototype *p_one = <span class="hljs-keyword">new</span> ConcretePrototype();
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt; <span class="hljs-string">"Before clone:"</span> &lt;&lt; p_one-&gt;number &lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; Prototype *p_two = p_one-&gt;Clone();
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt; <span class="hljs-string">"Clone:"</span> &lt;&lt; p_two-&gt;number &lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; p_two-&gt;number = <span class="hljs-number">200</span>;
+
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt; <span class="hljs-string">"----------------------"</span> &lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt; <span class="hljs-string">"Origin:"</span> &lt;&lt; p_one-&gt;number &lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt; <span class="hljs-string">"Clone:"</span> &lt;&lt; p_two-&gt;number &lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> p_one;
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> p_two;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

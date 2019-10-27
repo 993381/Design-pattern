@@ -1,0 +1,77 @@
+﻿<h1 id="_label0">1 概述</h1><pre class="ql-syntax" spellcheck="false">代理模式的优势在哪里？
+&nbsp; &nbsp;在一定程度上可以优化调整构造的顺序。将Doc的全部构造，拆分成image、Text的分步构造。优化了Doc的构造函数。
+&nbsp; &nbsp;为其他对象提供一种代理以控制对这个对象的访问
+&nbsp; &nbsp;对一个对象访问控制的一个原因是只有在我们确实需要这个对象时才对它进行创建和初始化
+&nbsp; &nbsp;[代理节省时间的本质就是把对象构造的时候加载资源花费的时间转移到使用的时候加载资源上去]
+&nbsp; &nbsp;让容易加载的资源优先加载，加载慢的资源稍后加载。
+</pre><h1 id="_label1">2 实例</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;unistd.h&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Text</span>{</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;                     <span class="hljs-comment">// 文本内容可以立即显示，速度很快！不需要代理</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">showText</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Wating for loading image."</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Wating for loading image."</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Wating for loading image."</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-meta">#if 0</span>
+&nbsp; &nbsp; &nbsp; &nbsp; ImageSubject
+&nbsp; &nbsp; &nbsp; &nbsp; /&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \
+&nbsp; &nbsp;BigImage&nbsp; &nbsp;&lt;-&nbsp; ProxyImage&nbsp; &nbsp;&lt;-&nbsp; Doc
+<span class="hljs-meta">#endif</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageSubject</span>{</span>&nbsp; &nbsp; &nbsp; &nbsp;                    <span class="hljs-comment">// 图片的加载需要时间，设置一个代理，设置代理就要提供接口</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">showImage</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BigImage</span>:</span><span class="hljs-keyword">public</span> ImageSubject{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 缓慢加载图片</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; BigImage(){
+&nbsp; &nbsp; &nbsp; &nbsp; sleep(<span class="hljs-number">4</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"已经加载完毕，可以显示图片"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">showImage</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"长卷 清明上河图"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProxyImage</span>:</span><span class="hljs-keyword">public</span> ImageSubject{&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 使用代理加载图片</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; ProxyImage(){
+&nbsp; &nbsp; &nbsp; &nbsp; bi=<span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">showImage</span><span class="hljs-params">()</span></span>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 代理加载图片需要一个私有的图片数据指针成员</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(bi==<span class="hljs-literal">NULL</span>)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bi=<span class="hljs-keyword">new</span> BigImage;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">// *********消耗时间*********</span>
+&nbsp; &nbsp; &nbsp; &nbsp; bi-&gt;showImage();
+&nbsp; &nbsp; }
+<span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; BigImage *bi;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;               <span class="hljs-comment">// 并不算子类对象，让代理生成以后，由代理去加载图片资源</span>
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Doc</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Doc(){
+&nbsp; &nbsp; &nbsp; &nbsp; t=<span class="hljs-keyword">new</span> Text;
+&nbsp; &nbsp; &nbsp; &nbsp; pi=<span class="hljs-keyword">new</span> ProxyImage;&nbsp; &nbsp; &nbsp;              <span class="hljs-comment">// 使用代理。代理生成的时候没有消耗时间</span>
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">show</span><span class="hljs-params">()</span></span>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;              <span class="hljs-comment">// 显示文本和使用代理去加载图片</span>
+&nbsp; &nbsp; &nbsp; &nbsp; pi-&gt;showImage();&nbsp; &nbsp; &nbsp; &nbsp;              <span class="hljs-comment">// 本来该由BigImage去showImage，现在由代理去调用子类对象的showImage</span>
+&nbsp; &nbsp; &nbsp; &nbsp; t-&gt;showText();&nbsp; &nbsp; &nbsp; &nbsp;               &nbsp;<span class="hljs-comment">// 这两个调换位置还能不能得到想要的结果？明显不可以，那么代理模式的优势在哪里？</span>
+&nbsp; &nbsp; }&nbsp;&nbsp;
+<span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; Text *t;
+&nbsp; &nbsp; ProxyImage *pi;
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; Doc d;&nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">// 如果不使用代理，BigImage的构造(加载图片)需要6秒，【等到d构造结束才能显示出文本】</span>
+&nbsp; &nbsp; d.show();&nbsp; &nbsp; <span class="hljs-comment">// 现在可以直接显示文本而无需等待图片加载结束</span>
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

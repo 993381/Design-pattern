@@ -1,0 +1,100 @@
+﻿<h1 id="_label0">1 Flyweight</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;vector&gt;</span>
+<span class="hljs-meta">#include &lt;string&gt;</span>
+<span class="hljs-meta">#include &lt;cassert&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Flyweight</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Flyweight(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Operation</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;extrinsicState)</span> </span>= <span class="hljs-number">0</span>;&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">//操作外部状态extrinsicState</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">GetIntrinsicState</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>-&gt;_intrinsicState; }
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Flyweight(<span class="hljs-built_in">string</span> intrinsicState) { _intrinsicState = intrinsicState; }
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> _intrinsicState;
+};
+
+<span class="hljs-keyword">void</span> Flyweight::Operation(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;extrinsicState)
+{
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteFlyweight</span> :</span> <span class="hljs-keyword">public</span> Flyweight
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteFlyweight(<span class="hljs-built_in">string</span> intrinsicState);
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteFlyweight(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Operation</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;extrinsicState)</span>&nbsp; &nbsp; <span class="hljs-comment">//实现接口函数</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"ConcreteFlyweight:内蕴["</span>&lt;&lt;GetIntrinsicState()&lt;&lt;<span class="hljs-string">"]外蕴["</span>&lt;&lt;extrinsicState&lt;&lt;<span class="hljs-string">"]"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UnsharedConcreteFlyweight</span> :</span> <span class="hljs-keyword">public</span> Flyweight
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:&nbsp; &nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Operation</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span>&amp; extrinsicState)</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span> &lt;&lt;<span class="hljs-string">"---extrinsicState:"</span>&lt;&lt;extrinsicState&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; UnsharedConcreteFlyweight(<span class="hljs-built_in">string</span> intrinsicState) : Flyweight(intrinsicState) {}
+&nbsp; &nbsp; &nbsp; &nbsp; ~UnsharedConcreteFlyweight(){}
+};
+
+<span class="hljs-meta">#if 1</span>
+ConcreteFlyweight::ConcreteFlyweight(<span class="hljs-built_in">string</span> intrinsicState) : Flyweight(intrinsicState)
+{&nbsp; &nbsp;
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"ConcreteFlyweight Build..."</span>&lt;&lt;intrinsicState&lt;&lt;<span class="hljs-built_in">endl</span>;
+}
+<span class="hljs-meta">#endif</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FlyweightFactory</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; FlyweightFactory(){}
+&nbsp; &nbsp; &nbsp; &nbsp; ~FlyweightFactory()
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;Flyweight *&gt;::iterator it = _fly.begin();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">for</span> (; it != _fly.end(); it++) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> *it;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *it = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">//获得一个请求的Flyweight对象</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">Flyweight *<span class="hljs-title">GetFlyweight</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;key)</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;Flyweight *&gt;::iterator it = _fly.begin();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">for</span> (; it != _fly.end(); it++) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> ((*it)-&gt;GetIntrinsicState() == key) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"---already created by users..."</span>&lt;&lt;key&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> *it;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Flyweight *fn = <span class="hljs-keyword">new</span> ConcreteFlyweight(key);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _fly.push_back(fn);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> fn;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">//保存内部状态对象的容器</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;Flyweight *&gt;_fly;
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; <span class="hljs-comment">//外部状态extrinsicState</span>
+&nbsp; &nbsp; <span class="hljs-built_in">string</span> extrinsicState = <span class="hljs-string">"ext"</span>;
+&nbsp; &nbsp; FlyweightFactory *fc = <span class="hljs-keyword">new</span> FlyweightFactory();
+&nbsp; &nbsp; Flyweight *fw1 = fc-&gt;GetFlyweight(<span class="hljs-string">"hello"</span>);
+&nbsp; &nbsp; <span class="hljs-comment">//应用外部状态</span>
+&nbsp; &nbsp; fw1-&gt;Operation(extrinsicState);
+
+&nbsp; &nbsp; Flyweight *fw2 = fc-&gt;GetFlyweight(<span class="hljs-string">"world!"</span>);
+&nbsp; &nbsp; Flyweight *fw3 = fc-&gt;GetFlyweight(<span class="hljs-string">"hello"</span>);
+
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> fc;
+&nbsp; &nbsp; fc = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

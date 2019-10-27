@@ -1,0 +1,143 @@
+﻿<h1 id="_label0">1 传统方法</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-comment">// 继承机制将抽象部分与它实现部分固定在一起，</span>
+<span class="hljs-comment">// 使得难以对抽象部分和实现部分(SolidLine/DotLine)独立地进行修改、扩充和重用</span>
+<span class="hljs-meta"># if 0</span>
+	&nbsp; &nbsp; &nbsp; Shape
+&nbsp; &nbsp; &nbsp; Circle&nbsp; &nbsp;Rect
+<span class="hljs-meta">#endif</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Shape</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Shape(<span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> y=<span class="hljs-number">0</span>)
+&nbsp; &nbsp; &nbsp; &nbsp; :_x(x),_y(y){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _x,_y;&nbsp;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> :</span> <span class="hljs-keyword">public</span> Shape{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Circle(<span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> y=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> ridus=<span class="hljs-number">0</span>):Shape(x,y),_ridus(ridus){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"draw from "</span>&lt;&lt;<span class="hljs-string">"("</span>&lt;&lt;_x&lt;&lt;<span class="hljs-string">","</span>&lt;&lt;_y&lt;&lt;<span class="hljs-string">")"</span>&lt;&lt;<span class="hljs-string">" ridus : "</span>&lt;&lt;_ridus&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _ridus;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rect</span>:</span><span class="hljs-keyword">public</span> Shape{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Rect(<span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> y=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> len=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> wid=<span class="hljs-number">0</span>):Shape(x,y),_len(len),_wid(wid){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"draw from "</span>&lt;&lt;<span class="hljs-string">"("</span>&lt;&lt;_x&lt;&lt;<span class="hljs-string">","</span>&lt;&lt;_y&lt;&lt;<span class="hljs-string">")"</span>&lt;&lt;<span class="hljs-string">" len : "</span>&lt;&lt;_len&lt;&lt;<span class="hljs-string">" wid : "</span>&lt;&lt;_wid&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _len;
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _wid;
+};
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; <span class="hljs-comment">// 这是未加Line * pl指针的时候的用法</span>
+
+&nbsp; &nbsp; <span class="hljs-function">Circle&nbsp; <span class="hljs-title">c</span><span class="hljs-params">(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)</span></span>;
+&nbsp; &nbsp; c.drawShape();
+&nbsp; &nbsp; <span class="hljs-function">Rect&nbsp; <span class="hljs-title">r</span><span class="hljs-params">(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)</span></span>;
+&nbsp; &nbsp; r.drawShape();
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label1">2 桥接模式</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-comment">// 继承机制将抽象部分与它实现部分固定在一起，</span>
+<span class="hljs-comment">// 使得难以对抽象部分和实现部分独立地进行修改、扩充和重用</span>
+
+<span class="hljs-comment">// 解决：</span>
+<span class="hljs-comment">// 1.将实现部分封装到一个到一个抽象类中。</span>
+<span class="hljs-comment">// 2.在被实现的抽象基类中，包含一个实现部分的基类引用。</span>
+<span class="hljs-meta"># if 0</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Line
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; / | \
+&nbsp; &nbsp; DotLine |&nbsp; SolidLine&nbsp; &nbsp; <span class="hljs-comment">//现在可以这样设计了。可以画实线&amp;圆、虚线&amp;圆、实线&amp;矩形、虚线&amp;矩形</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Shape
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /&nbsp; &nbsp; \
+&nbsp; &nbsp; &nbsp; Circle&nbsp; &nbsp;Rect
+<span class="hljs-meta">#endif</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Line</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawLine</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DotLine</span>:</span><span class="hljs-keyword">public</span> Line{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">drawLine</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"我可以画虚线"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SolidLine</span>:</span><span class="hljs-keyword">public</span> Line{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">drawLine</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"我可以画实线"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Shape</span>{</span>&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 此时，Shape就是一个桥，由Circle、Rect去继承</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Shape(<span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> y=<span class="hljs-number">0</span>,Line *pl=<span class="hljs-literal">NULL</span>)
+&nbsp; &nbsp; &nbsp; &nbsp; :_x(x),_y(y),_pl(pl){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _x,_y;
+&nbsp; &nbsp; Line * _pl;&nbsp; &nbsp; &nbsp;<span class="hljs-comment">// 在被实现的抽象基类中，包含一个实现部分的基类引用。</span>
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> :</span> <span class="hljs-keyword">public</span> Shape{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Circle(<span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> y=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> ridus=<span class="hljs-number">0</span>,Line *pl=<span class="hljs-literal">NULL</span>): Shape(x,y,pl),_ridus(ridus){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"draw from "</span>&lt;&lt;<span class="hljs-string">"("</span>&lt;&lt;_x&lt;&lt;<span class="hljs-string">","</span>&lt;&lt;_y&lt;&lt;<span class="hljs-string">")"</span>&lt;&lt;<span class="hljs-string">"ridus"</span>&lt;&lt;_ridus&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; _pl-&gt;drawLine();
+&nbsp; &nbsp; }
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _ridus;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rect</span>:</span><span class="hljs-keyword">public</span> Shape{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Rect(<span class="hljs-keyword">int</span> x=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> y=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> len=<span class="hljs-number">0</span>,<span class="hljs-keyword">int</span> wid=<span class="hljs-number">0</span>,Line *pl=<span class="hljs-literal">NULL</span>):Shape(x,y,pl),_len(len),_wid(wid){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">drawShape</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"draw from "</span>&lt;&lt;<span class="hljs-string">"("</span>&lt;&lt;_x&lt;&lt;<span class="hljs-string">","</span>&lt;&lt;_y&lt;&lt;<span class="hljs-string">")"</span>&lt;&lt;<span class="hljs-string">"len"</span>&lt;&lt;_len&lt;&lt;<span class="hljs-string">"wide "</span>&lt;&lt;_wid&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; _pl-&gt;drawLine();
+&nbsp; &nbsp; }
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _len;
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> _wid;
+};
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; <span class="hljs-comment">// 这是未加Line * pl指针的时候的用法</span>
+
+&nbsp; &nbsp; <span class="hljs-function">Circle&nbsp; <span class="hljs-title">c</span><span class="hljs-params">(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)</span></span>;
+&nbsp; &nbsp; c.drawShape();
+&nbsp; &nbsp; <span class="hljs-function">Rect&nbsp; <span class="hljs-title">r</span><span class="hljs-params">(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)</span></span>;
+&nbsp; &nbsp; r.drawShape();
+<span class="hljs-comment">/*
+&nbsp; &nbsp; DotLine&nbsp; dl;
+&nbsp; &nbsp; Circle&nbsp; c(1,2,3,&amp;dl);
+&nbsp; &nbsp; c.drawShape();
+
+&nbsp; &nbsp; SolidLine sl;
+&nbsp; &nbsp; Rect&nbsp; r(1,2,3,4,&amp;sl);
+&nbsp; &nbsp; r.drawShape();
+*/</span>
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

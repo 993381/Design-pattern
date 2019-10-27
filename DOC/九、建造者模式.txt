@@ -1,0 +1,158 @@
+﻿<h1 id="_label0">1 创建型模式</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;vector&gt;</span>
+<span class="hljs-meta">#include &lt;string&gt;</span>
+<span class="hljs-meta">#include &lt;iomanip&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span>;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span>;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::setw;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::setiosflags;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::ios;
+
+<span class="hljs-comment">// product</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProductFood</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ProductFood()
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mFoodName.clear();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mPrice.clear();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; ~ProductFood(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addFood</span><span class="hljs-params">(<span class="hljs-built_in">string</span> foodName,<span class="hljs-keyword">int</span> price)</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mFoodName.push_back(foodName);&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mPrice.push_back(price);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">showFood</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">int</span> totalPrice = <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Food List:"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; mFoodName.size(); ++i)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; totalPrice += mPrice[i];
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"&nbsp; &nbsp; "</span>&lt;&lt;setw(<span class="hljs-number">8</span>)&lt;&lt;setiosflags(ios::left)&lt;&lt;mFoodName[i]&lt;&lt;<span class="hljs-string">" = "</span>&lt;&lt;mPrice[i]&lt;&lt;<span class="hljs-string">" yuan"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;setw(<span class="hljs-number">8</span>)&lt;&lt;<span class="hljs-string">"&nbsp; &nbsp; Total"</span>&lt;&lt;<span class="hljs-string">" : "</span>&lt;&lt;totalPrice&lt;&lt;<span class="hljs-string">" yuan"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;<span class="hljs-built_in">string</span>&gt; mFoodName;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">//食品名称</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;<span class="hljs-keyword">int</span>&gt; mPrice;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">//食品价格</span>
+};
+
+<span class="hljs-comment">// builder</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Builder</span>&nbsp; &nbsp; //定义抽象的制作类，含有三个制作的环节和一个返回制作出来的产品方法
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Builder()
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(food)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> food;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">BuildCoolDish</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">BuildDrink</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">BuildRice</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> ProductFood *<span class="hljs-title">GetProductPoint</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Builder()
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; ProductFood *food;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteBuilderA</span> :</span> <span class="hljs-keyword">public</span> Builder
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteBuilderA(){
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food = <span class="hljs-keyword">new</span> ProductFood();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteBuilderA(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">BuildCoolDish</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"A:CoolDish have finished"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food-&gt;addFood(buildPara, <span class="hljs-number">10</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">BuildDrink</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"A:Drink have finished"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food-&gt;addFood(buildPara, <span class="hljs-number">11</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">BuildRice</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"A:Rice have finished"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food-&gt;addFood(buildPara, <span class="hljs-number">12</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">ProductFood *<span class="hljs-title">GetProductPoint</span><span class="hljs-params">()</span></span>{<span class="hljs-keyword">return</span> food;}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteBuilderB</span> :</span> <span class="hljs-keyword">public</span> Builder
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteBuilderB(){food = <span class="hljs-keyword">new</span> ProductFood();}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteBuilderB(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">BuildCoolDish</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"B:CoolDish have finished"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food-&gt;addFood(buildPara, <span class="hljs-number">20</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">BuildDrink</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"B:Drink have finished"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food-&gt;addFood(buildPara, <span class="hljs-number">21</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">BuildRice</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;buildPara)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"B:Rice have finished"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; food-&gt;addFood(buildPara, <span class="hljs-number">22</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">ProductFood *<span class="hljs-title">GetProductPoint</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> food;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+};
+
+
+<span class="hljs-comment">// director</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Director</span>&nbsp; &nbsp; &nbsp; //指导者，担任这个角色的类调用具体建造者角色以创建产品对象。此处是收银员
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Director(){_bld = <span class="hljs-literal">NULL</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~Director(){
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> (_bld) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> _bld;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">ProductFood *<span class="hljs-title">foodInfoPoint</span><span class="hljs-params">(<span class="hljs-keyword">char</span> ch)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> (_bld) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> _bld;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(ch == <span class="hljs-string">'A'</span>) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld = <span class="hljs-keyword">new</span> ConcreteBuilderA();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(ch == <span class="hljs-string">'B'</span>) {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld = <span class="hljs-keyword">new</span> ConcreteBuilderB();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">else</span> {&nbsp; &nbsp; <span class="hljs-comment">//other</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld-&gt;BuildCoolDish(<span class="hljs-string">"CoolDish"</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld-&gt;BuildDrink(<span class="hljs-string">"Drink"</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _bld-&gt;BuildRice(<span class="hljs-string">"Rice"</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> _bld-&gt;GetProductPoint();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Builder *_bld;
+};
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; Director *dt = <span class="hljs-keyword">new</span> Director();
+&nbsp; &nbsp; <span class="hljs-comment">//根据需要客户端的需要传入</span>
+&nbsp; &nbsp; <span class="hljs-keyword">char</span> ch[<span class="hljs-number">2</span>]={<span class="hljs-string">'A'</span>,<span class="hljs-string">'B'</span>};
+&nbsp; &nbsp; <span class="hljs-comment">//客户到来，输入需要哪种套餐A或B</span>
+&nbsp; &nbsp; <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">2</span>; i++) {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">//c in&gt;&gt;ch;</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"-------------------"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; dt-&gt;foodInfoPoint(ch[i])-&gt;showFood();
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> dt;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

@@ -1,0 +1,97 @@
+﻿<h1 id="_label0">1 传统方法的实现</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-comment">// 多态</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-comment">// 通过GrandFather的指针Son的对象，实现GrandFather的效果，该如何做到？？？</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GradFather</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"GradFather test"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Father</span>:</span><span class="hljs-keyword">public</span> GradFather{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>{
+	&nbsp; &nbsp; <span class="hljs-comment">// GradFather::test();&nbsp; &nbsp;          // 两个地方都写上，会调用两次</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Father test"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Son</span>:</span><span class="hljs-keyword">public</span> Father&nbsp; {
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">test</span><span class="hljs-params">()</span></span>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;              <span class="hljs-comment">// 不能直接写test();</span>
+&nbsp; &nbsp; &nbsp; &nbsp; GradFather::test();&nbsp;               <span class="hljs-comment">// 再次调用父类的虚函数</span>
+&nbsp; &nbsp; &nbsp; &nbsp; Father::test();&nbsp; &nbsp; &nbsp; &nbsp;             <span class="hljs-comment">// 调用父类的虚函数，执行子类的实现</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Son test"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; <span class="hljs-comment">// Father *pf=new Son;</span>
+&nbsp; &nbsp; <span class="hljs-comment">// pf-&gt;test();</span>
+
+&nbsp; &nbsp; GradFather *pg = <span class="hljs-keyword">new</span> Son;
+&nbsp; &nbsp; pg-&gt;test();&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;               <span class="hljs-comment">// 调用父类的虚函数，执行子类的实现</span>
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label1">2 实例</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-comment">/*
+ 抽象基类Phone出来分了两条路，一条由Nokia继承泛化，另一条由各种装饰品继承泛化
+&nbsp;本实例模拟卖手机，手机和保护套、耳机、贴膜等有不同的搭配，
+&nbsp;使用装饰模式去计算价格。动态的给一个对象添加一些额外的职责。
+&nbsp;注意，是 [ 动态的为一个对象添加新功能而不是为类添加新功能 ]
+*/</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Phone</span>{</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">// 首先抽象出一个手机类</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">int</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Nokia</span>:</span><span class="hljs-keyword">public</span> Phone{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">5000</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DecoratePhone</span>:</span><span class="hljs-keyword">public</span> Phone{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">// 构造一个装饰器类，接收传入的手机类指针</span>
+<span class="hljs-keyword">public</span>:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 将手机嵌入到另一对象中</span>
+&nbsp; &nbsp; DecoratePhone(Phone *ph):phone(ph){}&nbsp; <span class="hljs-comment">// 默认构造+初始化列表</span>
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; Phone *phone;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 装饰器将被装饰者(手机)对象指针私有化</span>
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ScreenProtectorPhone</span>:</span><span class="hljs-keyword">public</span> DecoratePhone{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; ScreenProtectorPhone(Phone * ph):DecoratePhone(ph){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">100</span> + phone-&gt;cost();&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 注意这个phone是在父类里面定义的</span>
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeadSetPhone</span> :</span> <span class="hljs-keyword">public</span> DecoratePhone{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; HeadSetPhone(Phone *ph): DecoratePhone(ph){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">cost</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">200</span> + phone-&gt;cost();
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; Nokia nk;
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt; nk.cost()&lt;&lt;<span class="hljs-built_in">endl</span>;
+
+&nbsp; &nbsp; <span class="hljs-function">ScreenProtectorPhone <span class="hljs-title">sp</span><span class="hljs-params">(&amp;nk)</span></span>;
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;sp.cost()&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-comment">//一件商品买一次，再买无效</span>
+&nbsp; &nbsp; Phone * p=
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">new</span> HeadSetPhone(
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">new</span> ScreenProtectorPhone(
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">new</span> HeadSetPhone(
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">new</span> ScreenProtectorPhone(
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">new</span> Nokia))));&nbsp; &nbsp;  <span class="hljs-comment">// 如参是phone，实际上是phone的各种子类函数</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// 确实是多态的应用。Phone为抽象基类，各种装饰品是DecoratePhone的继承</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">// Nokia是对phone的扩展</span>
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;p-&gt;cost()&lt;&lt;<span class="hljs-built_in">endl</span>;
+}
+</pre>

@@ -1,0 +1,111 @@
+﻿<h1 id="_label0">1 把狼伪装成羊</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-comment">// 将一个类的接口变成客户端所期待的另一种接口，从而使原本因接口不匹配而无法在一起工作的两个类能够在一起工作</span>
+<span class="hljs-comment">// 本程序就是将一头会嚎叫的狼伪装成一头会咩咩叫的狼</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Goat</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">miemie</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NormalGoat</span>:</span><span class="hljs-keyword">public</span> Goat{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">miemie</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"我是真正的羊"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Wolf</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">howl</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"我是真正的狼"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AdapterGoat</span>:</span><span class="hljs-keyword">public</span> Goat{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; AdapterGoat(Wolf *w):_w(w){}
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">miemie</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; _w-&gt;howl();
+&nbsp; &nbsp; }
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; Wolf * _w;
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; NormalGoat ng;
+	ng.miemie();
+
+	Wolf w;
+	w.howl();
+
+	<span class="hljs-function">AdapterGoat <span class="hljs-title">ag</span><span class="hljs-params">(&amp;w)</span></span>;&nbsp; &nbsp; &nbsp;<span class="hljs-comment">//把狼伪装成羊</span>
+	ag.miemie();
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label1">2 双端队列</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;queue&gt;</span>
+<span class="hljs-meta">#include &lt;stack&gt;</span>
+<span class="hljs-meta">#include &lt;deque&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-comment">// 双端队列经过适配后变成栈和普通队列</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyDeque</span>{</span>
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_back</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+		<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"void push_back(int x) "</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+	}
+	<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_front</span><span class="hljs-params">(<span class="hljs-keyword">int</span> y)</span></span>{
+		<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"void push_front(int y)"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+	}
+	<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pop_back</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"int pop_back()"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	}
+	<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pop_front</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"int pop_front()"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	}
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MySequence</span>{</span>
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+	<span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span> </span>= <span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyStack</span>:</span> <span class="hljs-keyword">public</span> MySequence{
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-keyword">return</span> md.pop_back();
+	}
+	<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+		md.push_back(x);
+	}
+<span class="hljs-keyword">private</span>:
+	MyDeque md;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyQueue</span>:</span> <span class="hljs-keyword">public</span> MySequence{
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span></span>{
+		<span class="hljs-keyword">return</span> md.pop_front();
+	}
+	<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+		md.push_back(x);
+	}
+<span class="hljs-keyword">private</span>:
+	MyDeque md;
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+	MyStack ms;
+	ms.push(<span class="hljs-number">10</span>);
+	ms.pop();
+	MyQueue mq;
+	mq.push(<span class="hljs-number">10</span>);
+	mq.pop();
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

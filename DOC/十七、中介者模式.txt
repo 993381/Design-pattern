@@ -1,0 +1,217 @@
+﻿<h1 id="_label0">1 Mediator1</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Colleague</span>;</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Mediator</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Mediator(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">IntroColleague</span><span class="hljs-params">(Colleague *clgA, Colleague *clgB)</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">DoActionFromAtoB</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">DoActionFromBtoA</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Mediator(){}
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteMediator</span> :</span> <span class="hljs-keyword">public</span> Mediator
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteMediator(){}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteMediator(){}
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteMediator(Colleague *clgA, Colleague *clgB)
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _clgA = clgA;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _clgB = clgB;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">SetConcreteColleagueA</span><span class="hljs-params">(Colleague *clgA)</span></span>{_clgA = clgA;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">SetConcreteColleagueB</span><span class="hljs-params">(Colleague *clgB)</span></span>{ _clgB = clgB;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">Colleague *<span class="hljs-title">GetConcreteColleagueA</span><span class="hljs-params">()</span></span>{ <span class="hljs-keyword">return</span> _clgA;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">Colleague *<span class="hljs-title">GetConcreteColleagueB</span><span class="hljs-params">()</span></span>{ <span class="hljs-keyword">return</span> _clgB;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">IntroColleague</span><span class="hljs-params">(Colleague *clgA, Colleague *clgB)</span></span>{ _clgA = clgA; _clgB = clgB;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">DoActionFromAtoB</span><span class="hljs-params">()</span></span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">DoActionFromBtoA</span><span class="hljs-params">()</span></span>;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Colleague *_clgA;
+&nbsp; &nbsp; &nbsp; &nbsp; Colleague *_clgB;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Colleague</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Colleague(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Action</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">SetState</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;sdt)</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-built_in">string</span> <span class="hljs-title">GetState</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Colleague(){}
+&nbsp; &nbsp; &nbsp; &nbsp; Colleague(Mediator *mdt){_mdt = mdt;}
+&nbsp; &nbsp; &nbsp; &nbsp; Mediator *_mdt;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteColleageA</span> :</span> <span class="hljs-keyword">public</span> Colleague
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteColleageA(){}
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteColleageA(Mediator *mdt) : Colleague(mdt){}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteColleageA(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Action</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _mdt-&gt;DoActionFromAtoB();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"---State of ConcreteColleageA:"</span>&lt;&lt;<span class="hljs-keyword">this</span>-&gt;GetState()&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">SetState</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;sdt)</span></span>{_sdt = sdt;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">GetState</span><span class="hljs-params">()</span></span>{<span class="hljs-keyword">return</span> _sdt;}
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> _sdt;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteColleageB</span> :</span> <span class="hljs-keyword">public</span> Colleague
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteColleageB(){}
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteColleageB(Mediator *mdt): Colleague(mdt){}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteColleageB(){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Action</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _mdt-&gt;DoActionFromBtoA();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"---State of ConcreteColleageB:"</span>&lt;&lt;<span class="hljs-keyword">this</span>-&gt;GetState()&lt;&lt;<span class="hljs-built_in">endl</span>;&nbsp; &nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">SetState</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span> &amp;sdt)</span></span>{_sdt = sdt;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">GetState</span><span class="hljs-params">()</span></span>{<span class="hljs-keyword">return</span> _sdt;}
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> _sdt;
+};
+
+<span class="hljs-keyword">void</span> ConcreteMediator :: DoActionFromAtoB() {_clgB-&gt;SetState(_clgA-&gt;GetState());}
+<span class="hljs-keyword">void</span> ConcreteMediator :: DoActionFromBtoA() {_clgA-&gt;SetState(_clgB-&gt;GetState());}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; Mediator *cm = <span class="hljs-keyword">new</span> ConcreteMediator();
+&nbsp; &nbsp; Colleague *cA = <span class="hljs-keyword">new</span> ConcreteColleageA(cm);
+&nbsp; &nbsp; Colleague *cB = <span class="hljs-keyword">new</span> ConcreteColleageB(cm);
+&nbsp; &nbsp; cm-&gt;IntroColleague(cA, cB);
+&nbsp; &nbsp; cA-&gt;SetState(<span class="hljs-string">"oldA"</span>);
+&nbsp; &nbsp; cB-&gt;SetState(<span class="hljs-string">"oldB"</span>);
+&nbsp; &nbsp; cA-&gt;Action();
+&nbsp; &nbsp; cB-&gt;Action();
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+
+&nbsp; &nbsp; cA-&gt;SetState(<span class="hljs-string">"newA"</span>);
+&nbsp; &nbsp; cA-&gt;Action();
+&nbsp; &nbsp; cB-&gt;Action();
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+
+&nbsp; &nbsp; cB-&gt;SetState(<span class="hljs-string">"old"</span>);
+&nbsp; &nbsp; cB-&gt;Action();
+&nbsp; &nbsp; cA-&gt;Action();
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label1">2 Meditaor2</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;vector&gt;</span>
+<span class="hljs-meta">#include &lt;string&gt;</span>
+<span class="hljs-comment">// 中介者模式：https://www.cnblogs.com/BeyondAnyTime/archive/2012/08/30/2663922.html</span>
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span>;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+
+<span class="hljs-comment">//抽象的同事类</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Colleage</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> name;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> content;
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Colleage(<span class="hljs-built_in">string</span> n = <span class="hljs-string">" "</span>):name(n){};
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">set_name</span><span class="hljs-params">(<span class="hljs-built_in">string</span> name)</span></span>{<span class="hljs-keyword">this</span>-&gt;name = name;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">get_name</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>-&gt;name; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">set_content</span><span class="hljs-params">(<span class="hljs-built_in">string</span> content)</span> </span>{ <span class="hljs-keyword">this</span>-&gt;content = content; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">get_content</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> content; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">talk</span><span class="hljs-params">()</span></span>{};
+
+};
+<span class="hljs-comment">//具体的同事类:班长</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monitor</span> :</span> <span class="hljs-keyword">public</span> Colleage
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Monitor(<span class="hljs-built_in">string</span> n = <span class="hljs-string">""</span>):Colleage(n){};
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">talk</span><span class="hljs-params">()</span> </span>{ <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"大班长 说："</span>&lt;&lt;get_content()&lt;&lt;<span class="hljs-built_in">endl</span>; }
+};
+<span class="hljs-comment">//具体的同事类:团支书</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TuanZhiShu</span> :</span> <span class="hljs-keyword">public</span> Colleage
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; TuanZhiShu(<span class="hljs-built_in">string</span> n = <span class="hljs-string">""</span>):Colleage(n){};
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">talk</span><span class="hljs-params">()</span> </span>{ <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"团支书 说："</span>&lt;&lt;get_content()&lt;&lt;<span class="hljs-built_in">endl</span>; }
+};
+<span class="hljs-comment">//具体的同事类:同学A</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StudentA</span> :</span> <span class="hljs-keyword">public</span> Colleage
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; StudentA(<span class="hljs-built_in">string</span> n = <span class="hljs-string">""</span>):Colleage(n){};
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">talk</span><span class="hljs-params">()</span> </span>{ <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"学生 A 说："</span>&lt;&lt;get_content()&lt;&lt;<span class="hljs-built_in">endl</span>; }
+};
+<span class="hljs-comment">//具体的同事类:同学B</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StudentB</span> :</span> <span class="hljs-keyword">public</span> Colleage
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; StudentB(<span class="hljs-built_in">string</span> n = <span class="hljs-string">""</span>):Colleage(n){};
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">talk</span><span class="hljs-params">()</span> </span>{ <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"学生 B 说："</span>&lt;&lt;get_content()&lt;&lt;<span class="hljs-built_in">endl</span>; }
+};
+<span class="hljs-comment">//抽象中介者</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Mediator</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;Colleage*&gt; studentList;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">add_student</span><span class="hljs-params">(Colleage *student)</span> </span>{ studentList.push_back(student); }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">notify</span><span class="hljs-params">(Colleage *student)</span></span>{}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">chart</span><span class="hljs-params">(Colleage *student1,Colleage *student2)</span></span>{}
+};
+<span class="hljs-comment">//具体中介者qq通讯平台</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">QQMediator</span> :</span> <span class="hljs-keyword">public</span> Mediator
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">notify</span><span class="hljs-params">(Colleage *student)</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; student-&gt;talk();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span> ; i &lt; studentList.size() ; ++i)&nbsp; &nbsp; <span class="hljs-comment">//不是说话者</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(student != studentList[i])
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; studentList[i]-&gt;talk();
+&nbsp; &nbsp; &nbsp; &nbsp; };
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">chart</span><span class="hljs-params">(Colleage *student1,Colleage *student2)</span>
+&nbsp; &nbsp; &nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; student1-&gt;talk();
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; student2-&gt;talk();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+};
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; QQMediator qq;
+&nbsp; &nbsp; <span class="hljs-function">Monitor <span class="hljs-title">studentMonitor</span><span class="hljs-params">(<span class="hljs-string">"Vincent"</span>)</span></span>;
+&nbsp; &nbsp; <span class="hljs-function">TuanZhiShu <span class="hljs-title">studentTuanZhiShu</span><span class="hljs-params">(<span class="hljs-string">"Robort"</span>)</span></span>;
+&nbsp; &nbsp; <span class="hljs-function">StudentA <span class="hljs-title">studentA</span><span class="hljs-params">(<span class="hljs-string">"Sam"</span>)</span></span>;
+&nbsp; &nbsp; <span class="hljs-function">StudentB <span class="hljs-title">studentB</span><span class="hljs-params">(<span class="hljs-string">"Tom"</span>)</span></span>;
+&nbsp; &nbsp; <span class="hljs-comment">/*----------------------班长发通知-----------------------------*/</span>
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"下面的班长发布一个通知的场景："</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-comment">//将同学们加入到qq群中</span>
+&nbsp; &nbsp; qq.add_student(&amp;studentMonitor);
+&nbsp; &nbsp; qq.add_student(&amp;studentTuanZhiShu);
+&nbsp; &nbsp; qq.add_student(&amp;studentA);
+&nbsp; &nbsp; qq.add_student(&amp;studentB);
+&nbsp; &nbsp; <span class="hljs-comment">//设置大家的回复信息</span>
+&nbsp; &nbsp; studentMonitor.set_content(<span class="hljs-string">"明天下午2点开年级会，收到回复^^。"</span>);
+&nbsp; &nbsp; studentTuanZhiShu.set_content(<span class="hljs-string">"知道了，肯定到!!"</span>);
+&nbsp; &nbsp; studentA.set_content(<span class="hljs-string">"收到了，但是可能晚点到!!"</span>);
+&nbsp; &nbsp; studentB.set_content(<span class="hljs-string">"收到了，但是明天要去面试!!"</span>);
+&nbsp; &nbsp; <span class="hljs-comment">//开始发通知</span>
+&nbsp; &nbsp; qq.notify(&amp;studentMonitor);
+&nbsp; &nbsp; <span class="hljs-comment">/*--------------------两个同学私下交流--------------------------*/</span>
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-built_in">endl</span>&lt;&lt;<span class="hljs-string">"下面是两个同学的私下交流："</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; studentMonitor.set_content(<span class="hljs-string">"你觉得咱们“软件项目管理老师”讲的怎么样？"</span>);
+&nbsp; &nbsp; studentA.set_content(<span class="hljs-string">"我觉得讲的不够生动，还点名，不太好!!!"</span>);
+&nbsp; &nbsp; qq.chart(&amp;studentMonitor,&amp;studentA);
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><p><br></p>

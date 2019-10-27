@@ -1,0 +1,137 @@
+﻿<h1 id="_label0">1 Iterator</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;string&gt;</span>
+<span class="hljs-meta">#include &lt;vector&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Iterator</span>
+{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; Iterator(){};
+&nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Iterator(){};
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-built_in">string</span> <span class="hljs-title">First</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-built_in">string</span> <span class="hljs-title">Next</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-built_in">string</span> <span class="hljs-title">GetCur</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">IsEnd</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Aggregate</span>
+{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">int</span> <span class="hljs-title">Count</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Push</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span>&amp; strValue)</span></span>=<span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-built_in">string</span> <span class="hljs-title">Pop</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> nIndex)</span></span>=<span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> Iterator* <span class="hljs-title">CreateIterator</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteIterator</span> :</span> <span class="hljs-keyword">public</span> Iterator
+{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; ConcreteIterator(Aggregate* pAggregate):m_nCurrent(<span class="hljs-number">0</span>),Iterator()
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; m_Aggregate = pAggregate;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">First</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> m_Aggregate-&gt;Pop(<span class="hljs-number">0</span>);
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">Next</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> strRet;
+&nbsp; &nbsp; &nbsp; &nbsp; m_nCurrent++;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(m_nCurrent &lt; m_Aggregate-&gt;Count())
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; strRet = m_Aggregate-&gt;Pop(m_nCurrent);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> strRet;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">GetCur</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> m_Aggregate-&gt;Pop(m_nCurrent);
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">IsEnd</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> ((m_nCurrent &gt;= m_Aggregate-&gt;Count()) ? <span class="hljs-literal">true</span>: <span class="hljs-literal">false</span>);
+&nbsp; &nbsp; }
+<span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; Aggregate* m_Aggregate;
+&nbsp; &nbsp; <span class="hljs-keyword">int</span> m_nCurrent;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteAggregate</span> :</span> <span class="hljs-keyword">public</span> Aggregate
+{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; ConcreteAggregate():m_pIterator(<span class="hljs-literal">NULL</span>)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; m_vecItems.clear();
+&nbsp; &nbsp; }
+&nbsp; &nbsp; ~ConcreteAggregate()
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(<span class="hljs-literal">NULL</span> != m_pIterator)
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> m_pIterator;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; m_pIterator = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function">Iterator* <span class="hljs-title">CreateIterator</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(<span class="hljs-literal">NULL</span> == m_pIterator)
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; m_pIterator = <span class="hljs-keyword">new</span> ConcreteIterator(<span class="hljs-keyword">this</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> m_pIterator;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">Count</span><span class="hljs-params">()</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> m_vecItems.size();
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Push</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-built_in">string</span>&amp; strValue)</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; m_vecItems.push_back(strValue);
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">Pop</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> nIndex)</span>
+&nbsp; &nbsp; </span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> strRet;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(nIndex &lt; Count())
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; strRet = m_vecItems[nIndex];
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> strRet;
+&nbsp; &nbsp; }
+<span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;<span class="hljs-built_in">string</span>&gt; m_vecItems;
+&nbsp; &nbsp; Iterator* m_pIterator;
+
+
+};
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; ConcreteAggregate* pName = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; pName = <span class="hljs-keyword">new</span> ConcreteAggregate();
+&nbsp; &nbsp; <span class="hljs-keyword">if</span>(<span class="hljs-literal">NULL</span> != pName)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; pName-&gt;Push(<span class="hljs-string">"hello"</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; pName-&gt;Push(<span class="hljs-string">"word"</span>);
+&nbsp; &nbsp; &nbsp; &nbsp; pName-&gt;Push(<span class="hljs-string">"cxue"</span>);
+&nbsp; &nbsp; }
+&nbsp; &nbsp; Iterator* iter = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; iter = pName-&gt;CreateIterator();
+&nbsp; &nbsp; <span class="hljs-keyword">if</span>(<span class="hljs-literal">NULL</span> != iter)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">string</span> strItem = iter-&gt;First();
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">while</span>(!iter-&gt;IsEnd())
+&nbsp; &nbsp; &nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span> &lt;&lt; iter-&gt;GetCur() &lt;&lt; <span class="hljs-string">" is ok"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; iter-&gt;Next();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+
+
+
+</pre>

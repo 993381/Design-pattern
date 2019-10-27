@@ -1,0 +1,85 @@
+﻿<h1 id="_label0">1. 单例模式</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;string.h&gt;</span>
+<span class="hljs-meta">#include &lt;fstream&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-comment">// 懒汉模式</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singletion</span>{</span>
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">static</span> Singletion * <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">if</span>(_ins==<span class="hljs-literal">NULL</span>) _ins = <span class="hljs-keyword">new</span> Singletion;
+        <span class="hljs-keyword">return</span> _ins;                            <span class="hljs-comment">// 最后，要返回一个不为空的单例</span>
+    }
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">getData</span><span class="hljs-params">()</span></span>{
+        <span class="hljs-keyword">return</span> data;
+    }
+<span class="hljs-keyword">private</span>:                                        <span class="hljs-comment">// 重写五大默认都私有化将会堵死所有的构造，成为真正的单例</span>
+    Singletion();
+    ~Singletion();
+    <span class="hljs-keyword">static</span> Singletion * _ins;                 &nbsp;<span class="hljs-comment">// 私有化数据通过公有化方法进行操作</span>
+    <span class="hljs-keyword">int</span> data;
+};
+
+Singletion * Singletion::_ins=<span class="hljs-literal">NULL</span>;         &nbsp;  <span class="hljs-comment">// 静态成员要在类外初始化。static的要放在cpp里面。</span>
+
+Singletion::Singletion(){                      <span class="hljs-comment">// 构造的时候就装载数据，也能放在其它函数里，用的时候调用</span>
+    fstream fs;
+    fs.open(<span class="hljs-string">"aa.txt"</span>,ios::in|ios::out);
+    <span class="hljs-keyword">if</span>(!fs) <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Error"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;               <span class="hljs-comment">// !fs是重载了的</span>
+    <span class="hljs-keyword">else</span>
+        fs&gt;&gt;data;
+    fs.close();
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span>{</span>
+<span class="hljs-keyword">public</span>:
+    A();
+    ~A(){}
+};
+A::A(){
+    Singletion * dt=Singletion::getInstance();
+    <span class="hljs-built_in">cout</span>&lt;&lt;dt-&gt;getData()&lt;&lt;<span class="hljs-built_in">endl</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    A a;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+
+<span class="hljs-comment">// 测试用例：建立aa.txt，内容为一行IP一行port数字</span>
+</pre><h1 id="_label1">2. 懒汉模式和饿汉模式</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-comment">// Lazy 需要的时候再初始化，资源加载比较慢</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singletion</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">static</span> Singletion * <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>;
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; Singletion(){}
+<span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">static</span> Singletion * p;
+};
+Singletion * Singletion::p = <span class="hljs-literal">NULL</span>;
+Singletion * Singletion::getInstance(){
+&nbsp; &nbsp; <span class="hljs-keyword">if</span> (p == <span class="hljs-literal">NULL</span>)
+&nbsp; &nbsp; &nbsp; &nbsp; p = <span class="hljs-keyword">new</span> Singletion;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">// 在静态成员函数里获取资源</span>
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> p;
+}
+
+
+<span class="hljs-comment">// Hungry 生成实例即完成资源初始化</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singletion</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">static</span> Singletion * <span class="hljs-title">getInstance</span><span class="hljs-params">()</span></span>;
+<span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; Singletion(){}
+<span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; <span class="hljs-keyword">static</span> Singletion * p;
+};
+
+Singletion * Singletion::p = <span class="hljs-keyword">new</span> Singletion;&nbsp; &nbsp; <span class="hljs-comment">// 对象初始化的时候获取资源</span>
+
+Singletion * Singletion::getInstance(){
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> p;
+}
+
+<span class="hljs-comment">// 异同：构造的时机不同。需要的时候构造、立即构造两种</span>
+</pre>

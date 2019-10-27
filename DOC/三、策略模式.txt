@@ -1,0 +1,44 @@
+﻿<pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-comment">// 重点：转型、多态</span>
+<span class="hljs-comment">// Define a family of algorithms,encapsulate each one,and make them interchangeable.</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Weapon</span>{</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;            <span class="hljs-comment">// 将刀，枪都抽象成一个武器类</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">use</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Knife</span>:</span><span class="hljs-keyword">public</span> Weapon{&nbsp; &nbsp; &nbsp; &nbsp;           <span class="hljs-comment">// 覆写虚函数use</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">use</span><span class="hljs-params">()</span> </span>{ <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Use knife"</span>&lt;&lt;<span class="hljs-built_in">endl</span>; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Gun</span>:</span><span class="hljs-keyword">public</span> Weapon{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;           <span class="hljs-comment">// 覆写虚函数use</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">use</span><span class="hljs-params">()</span> </span>{ <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Use gun"</span>&lt;&lt;<span class="hljs-built_in">endl</span>; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CCsprite</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; CCsprite(Weapon *w){ _w=w; }&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;   <span class="hljs-comment">// 改变接口指针的指向</span>
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">changWeapon</span><span class="hljs-params">(Weapon *w)</span></span>{ _w=w; }    <span class="hljs-comment">// 达到切换武器的效果&nbsp;</span>
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">faighting</span><span class="hljs-params">()</span></span>{ _w-&gt;use(); }
+<span class="hljs-keyword">private</span>:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;            <span class="hljs-comment">// 保护和私有都可以</span>
+&nbsp; &nbsp; Weapon * _w;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;            <span class="hljs-comment">// 将StrategyInterface对象指针私有化</span>
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; Knife k;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;            <span class="hljs-comment">//将武器作为参数传进去</span>
+&nbsp; &nbsp; <span class="hljs-function">CCsprite <span class="hljs-title">character</span><span class="hljs-params">(&amp;k)</span></span>;
+&nbsp; &nbsp; character.faighting();
+
+&nbsp; &nbsp; Gun g;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;            <span class="hljs-comment">//切换枪战斗</span>
+&nbsp; &nbsp; character.changWeapon(&amp;g);
+&nbsp; &nbsp; character.faighting();
+
+&nbsp; &nbsp; character.changWeapon(&amp;k);&nbsp; &nbsp;           <span class="hljs-comment">//换回刀战斗</span>
+&nbsp; &nbsp; character.faighting();
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

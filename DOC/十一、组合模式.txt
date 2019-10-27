@@ -1,0 +1,91 @@
+﻿<h1 id="_label0">1 Composite</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;vector&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Component</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Operation</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Add</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Component &amp;)</span></span>{}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Remove</span><span class="hljs-params">(<span class="hljs-keyword">const</span> Component &amp;)</span></span>{}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> Component *<span class="hljs-title">GetChild</span><span class="hljs-params">(<span class="hljs-keyword">int</span>)</span></span>{<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;}
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Component(){}
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Component(){}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Composite</span> :</span> <span class="hljs-keyword">public</span> Component
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Composite(){}
+&nbsp; &nbsp; &nbsp; &nbsp; ~Composite(){}
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="hljs-comment">//实现的接口</span>
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Operation</span><span class="hljs-params">()</span></span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Add</span><span class="hljs-params">(Component *com)</span></span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Remove</span><span class="hljs-params">(Component *com)</span></span>{}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">Component *<span class="hljs-title">GetChild</span><span class="hljs-params">(<span class="hljs-keyword">int</span> index)</span></span>;
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;Component *&gt;comVec;
+};
+
+<span class="hljs-keyword">void</span> Composite::Operation()
+{
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Composite Operation the vector"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; <span class="hljs-built_in">vector</span>&lt;Component *&gt;::iterator comIter = comVec.begin();
+&nbsp; &nbsp; <span class="hljs-keyword">for</span>(;comIter != comVec.end(); comIter++) {
+&nbsp; &nbsp; &nbsp; &nbsp; (*comIter)-&gt;Operation();
+&nbsp; &nbsp; }
+}
+
+<span class="hljs-keyword">void</span> Composite::Add(Component *com)
+{
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Composite::Add()"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; comVec.push_back(com);
+}
+
+Component *Composite::GetChild(<span class="hljs-keyword">int</span> index)
+{
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Composite::GetChild()"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+
+&nbsp; &nbsp; <span class="hljs-keyword">if</span>(index &lt; <span class="hljs-number">0</span> || index &gt;= comVec.size()) {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; }
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> comVec[index];
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Leaf</span> :</span> <span class="hljs-keyword">public</span> Component
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Leaf(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Leaf"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; ~Leaf(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~Leaf"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Operation</span><span class="hljs-params">()</span> </span>{<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Leaf::Operation()"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; <span class="hljs-comment">//不管是叶子Leaf还是Composite对象pRoot、pCom都实现了Operation接口，所以可以一致对待，直接调用Operation()</span>
+&nbsp; &nbsp; <span class="hljs-comment">//体现了“使得用户对单个对象和组合对象的使用具有一致性”</span>
+&nbsp; &nbsp; Component *lf = <span class="hljs-keyword">new</span> Leaf();
+&nbsp; &nbsp; <span class="hljs-comment">//执行叶子Operation操作</span>
+&nbsp; &nbsp; lf-&gt;Operation();
+&nbsp; &nbsp; Component *lf2 = <span class="hljs-keyword">new</span> Leaf();
+
+&nbsp; &nbsp; Composite *com = <span class="hljs-keyword">new</span> Composite();
+&nbsp; &nbsp; <span class="hljs-comment">//组合对象添加叶子节点</span>
+&nbsp; &nbsp; com-&gt;Add(lf);
+&nbsp; &nbsp; com-&gt;Add(lf2);
+&nbsp; &nbsp; <span class="hljs-comment">//执行组合对象Operation操作</span>
+&nbsp; &nbsp; com-&gt;Operation();
+
+&nbsp; &nbsp; <span class="hljs-comment">//获取组合对象中的节点</span>
+&nbsp; &nbsp; Component *ll = com-&gt;GetChild(<span class="hljs-number">0</span>);
+&nbsp; &nbsp; ll-&gt;Operation();
+
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> com;
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> lf;
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> lf2;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

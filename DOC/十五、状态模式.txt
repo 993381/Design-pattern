@@ -1,0 +1,85 @@
+﻿<h1 id="_label0">1 State</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-meta">#include &lt;string&gt;</span>
+
+<span class="hljs-comment">// 有虚函数（纯虚函数）就应该有虚析构函数。 否则有警告错：that is abstract but has non-virtual destructor</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">State</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doSomething</span><span class="hljs-params">(Worker* worker)</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~State(){}
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Worker</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Worker();
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">doSomething</span><span class="hljs-params">()</span> </span>{currentState-&gt;doSomething(<span class="hljs-keyword">this</span>);}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setHour</span><span class="hljs-params">(<span class="hljs-keyword">int</span> hour)</span> </span>{<span class="hljs-keyword">this</span>-&gt;hour = hour;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">getHour</span><span class="hljs-params">()</span> </span>{<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>-&gt;hour;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setCurrentState</span><span class="hljs-params">(State* state)</span> </span>{<span class="hljs-keyword">this</span>-&gt;currentState = state;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">State* <span class="hljs-title">getCurrentState</span><span class="hljs-params">()</span> </span>{<span class="hljs-keyword">return</span> currentState;}
+&nbsp; &nbsp; <span class="hljs-keyword">private</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">int</span> hour;
+&nbsp; &nbsp; &nbsp; &nbsp; State* currentState;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StateWork</span> :</span> <span class="hljs-keyword">public</span> State
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doSomething</span><span class="hljs-params">(Worker* worker)</span></span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">StateBreakfast</span> :</span> <span class="hljs-keyword">public</span> State
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">doSomething</span><span class="hljs-params">(Worker* worker)</span></span>;
+};
+
+<span class="hljs-keyword">void</span> StateBreakfast::doSomething(Worker* worker)
+{
+&nbsp; &nbsp; <span class="hljs-keyword">if</span> (worker-&gt;getHour() &gt;= <span class="hljs-number">8</span> &amp;&amp; worker-&gt;getHour() &lt; <span class="hljs-number">9</span>)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"Eat breakfast"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (worker-&gt;getHour() &gt;= <span class="hljs-number">9</span> &amp;&amp; worker-&gt;getHour() &lt; <span class="hljs-number">11</span>)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> worker-&gt;getCurrentState();
+&nbsp; &nbsp; &nbsp; &nbsp; worker-&gt;setCurrentState(<span class="hljs-keyword">new</span> StateWork());
+&nbsp; &nbsp; &nbsp; &nbsp; worker-&gt;getCurrentState()-&gt;doSomething(worker);
+&nbsp; &nbsp; }
+}
+
+<span class="hljs-keyword">void</span> StateWork :: doSomething(Worker* worker)
+{
+&nbsp; &nbsp; <span class="hljs-keyword">if</span> (worker-&gt;getHour() &gt;= <span class="hljs-number">9</span> &amp;&amp; worker-&gt;getHour() &lt; <span class="hljs-number">11</span>)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">"Work"</span> &lt;&lt; <span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (worker-&gt;getHour() &gt;= <span class="hljs-number">8</span> &amp;&amp; worker-&gt;getHour() &lt; <span class="hljs-number">9</span>)
+&nbsp; &nbsp; {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> worker-&gt;getCurrentState();
+&nbsp; &nbsp; &nbsp; &nbsp; worker-&gt;setCurrentState(<span class="hljs-keyword">new</span> StateBreakfast);
+&nbsp; &nbsp; &nbsp; &nbsp; worker-&gt;getCurrentState()-&gt;doSomething(worker);
+&nbsp; &nbsp; }
+}
+
+Worker::Worker()
+{
+&nbsp; &nbsp; setCurrentState(<span class="hljs-keyword">new</span> StateBreakfast);
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; Worker* worker = <span class="hljs-keyword">new</span> Worker();
+&nbsp; &nbsp; worker-&gt;setHour(<span class="hljs-number">8</span>);
+&nbsp; &nbsp; worker-&gt;doSomething();
+&nbsp; &nbsp; worker-&gt;setHour(<span class="hljs-number">10</span>);
+&nbsp; &nbsp; worker-&gt;doSomething();
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> worker;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre>

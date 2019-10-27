@@ -1,0 +1,359 @@
+﻿<h1 id="_label0">1.1 简单工厂</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-comment">// 1.简单工厂</span>
+<span class="hljs-comment">// 定义一个用于创建对象的接口，让子类决定实例化哪一个类，将实例化延迟到子类。有选择地实例化</span>
+<span class="hljs-comment">//&nbsp;</span>
+<span class="hljs-meta">#if 0</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SingleCore
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /&nbsp; &nbsp; |&nbsp; &nbsp; \
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;/&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;\
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /&nbsp; &nbsp; &nbsp; |&nbsp; &nbsp; &nbsp; \&nbsp;&nbsp;
+SingleCoreA SingleCoreB SingleCoreC
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;/
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \&nbsp; &nbsp; |&nbsp; &nbsp; /
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Factory&nbsp;
+<span class="hljs-meta">#endif</span>
+
+<span class="hljs-keyword">enum</span> CoreType{
+&nbsp; &nbsp; COREA,COREB,COREC
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCore</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-comment">//virtual ~SingleCore(){}</span>
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCoreA</span>:</span><span class="hljs-keyword">public</span> SingleCore{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"SingleCoreA"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCoreB</span>:</span><span class="hljs-keyword">public</span> SingleCore{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"SingleCoreB"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCoreC</span>:</span><span class="hljs-keyword">public</span> SingleCore{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"SingleCoreC"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Factory</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function">SingleCore * <span class="hljs-title">createSingleCore</span><span class="hljs-params">(<span class="hljs-keyword">enum</span> CoreType type)</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(type==COREA)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> SingleCoreA;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(type==COREB)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> SingleCoreB;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span>(type==COREC)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> SingleCoreC;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-comment">//else return NULL;</span>
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; Factory fac;&nbsp; &nbsp; &nbsp;<span class="hljs-comment">//创建工厂</span>
+	<span class="hljs-comment">// 生产A类产品</span>
+&nbsp; &nbsp; SingleCore *pa = fac.createSingleCore(COREA);
+&nbsp; &nbsp; pa-&gt;work();
+&nbsp; &nbsp;&nbsp;
+	<span class="hljs-comment">// 生产B类产品</span>
+&nbsp; &nbsp; SingleCore *pb = fac.createSingleCore(COREB);
+&nbsp; &nbsp; pb-&gt;work();
+&nbsp; &nbsp;&nbsp;
+	<span class="hljs-comment">// 生产C类产品</span>
+&nbsp; &nbsp; SingleCore *pc = fac.createSingleCore(COREC);
+&nbsp; &nbsp; pc-&gt;work();
+
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> pa; <span class="hljs-keyword">delete</span> pb; <span class="hljs-keyword">delete</span> pc;
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label1">1.2 简单工厂的升级</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-comment">// 1.简单工厂</span>
+<span class="hljs-comment">// 定义一个用于创建对象的接口，让子类决定实例化哪一个类，将实例化延迟到子类</span>
+<span class="hljs-meta">#if 0</span>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SingleCore
+	&nbsp; &nbsp; &nbsp; &nbsp; /&nbsp; &nbsp; |&nbsp; &nbsp; \
+	&nbsp; &nbsp; &nbsp; &nbsp;/&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;\
+		&nbsp; /&nbsp; &nbsp; &nbsp; |&nbsp; &nbsp; &nbsp; \&nbsp;&nbsp;
+SingleCoreA SingleCoreB SingleCoreC
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;/
+		&nbsp; &nbsp; \&nbsp; &nbsp; |&nbsp; &nbsp; /
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Factory&nbsp;
+<span class="hljs-meta">#endif</span>
+
+<span class="hljs-keyword">enum</span> CoreType{
+&nbsp; &nbsp; COREA,COREB,COREC
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCore</span>{</span>
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>=<span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCoreA</span>:</span><span class="hljs-keyword">public</span> SingleCore{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"SingleCoreA"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCoreB</span>:</span><span class="hljs-keyword">public</span> SingleCore{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"SingleCoreB"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SingleCoreC</span>:</span><span class="hljs-keyword">public</span> SingleCore{
+<span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"SingleCoreC"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Factory</span>{</span>
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function"><span class="hljs-keyword">virtual</span> SingleCore * <span class="hljs-title">createSingleCore</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FactoryCA</span>:</span><span class="hljs-keyword">public</span> Factory{
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function">SingleCore *<span class="hljs-title">createSingleCore</span><span class="hljs-params">()</span></span>{
+	&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> SingleCoreA;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FactoryCB</span>:</span><span class="hljs-keyword">public</span> Factory{
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function">SingleCore *<span class="hljs-title">createSingleCore</span><span class="hljs-params">()</span></span>{
+	&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> SingleCoreB;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FactoryCC</span>:</span><span class="hljs-keyword">public</span> Factory{
+<span class="hljs-keyword">public</span>:
+	<span class="hljs-function">SingleCore *<span class="hljs-title">createSingleCore</span><span class="hljs-params">()</span></span>{
+	&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> SingleCoreC;
+&nbsp; &nbsp; }
+};
+
+<span class="hljs-comment">// 加入内存管理</span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; Factory *fca = <span class="hljs-keyword">new</span> FactoryCA();
+	fca-&gt;createSingleCore()-&gt;work();
+
+	Factory *fcb = <span class="hljs-keyword">new</span> FactoryCB();
+	fcb-&gt;createSingleCore()-&gt;work();
+
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label2">2.1 抽象工厂</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-comment">// https://blog.csdn.net/taiyang1987912/article/details/43148913</span>
+<span class="hljs-comment">// https://blog.csdn.net/taiyang1987912/article/category/2859245/2?</span>
+<span class="hljs-comment">// product.h</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Product() = <span class="hljs-number">0</span>;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Product() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" Product"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+<span class="hljs-comment">// 上面有了虚析构，下面的析构可以不写</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteProduct1</span> :</span> <span class="hljs-keyword">public</span> Product
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteProduct1() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcreteProduct1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteProduct1(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ConcreteProduct1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteProduct3</span> :</span> <span class="hljs-keyword">public</span> Product
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteProduct3() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcreteProduct3"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteProduct3(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ConcreteProduct3"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+
+<span class="hljs-comment">// product纯虚析构可以有实现</span>
+Product::~Product()
+{
+&nbsp; &nbsp; <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~Product"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+}
+<span class="hljs-comment">// factory</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Factory</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~Factory() = <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> Product *<span class="hljs-title">CreateProduct</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setFactoryMethod</span><span class="hljs-params">(<span class="hljs-keyword">int</span> flag)</span></span>;
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; Factory():_flag(<span class="hljs-number">0</span>){}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">int</span> _flag;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteFactory</span> :</span> <span class="hljs-keyword">public</span> Factory
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteFactory() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcreteFactory"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteFactory(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ConcreteFactory"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> Product *<span class="hljs-title">CreateProduct</span><span class="hljs-params">()</span></span>;
+};
+Factory::~Factory()
+{
+}
+<span class="hljs-keyword">void</span> Factory::setFactoryMethod(<span class="hljs-keyword">int</span> flag)
+{
+&nbsp; &nbsp; _flag = flag;
+}
+
+Product *ConcreteFactory::CreateProduct()&nbsp; <span class="hljs-comment">//创建操作</span>
+{
+&nbsp; &nbsp; <span class="hljs-keyword">if</span>(_flag == <span class="hljs-number">1</span>)&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ConcreteProduct1();&nbsp; &nbsp; &nbsp;<span class="hljs-comment">//子类中决定要实例化哪一个类</span>
+&nbsp; &nbsp; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(_flag == <span class="hljs-number">3</span>)
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ConcreteProduct3();
+&nbsp; &nbsp; <span class="hljs-comment">//else return NULL;</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span>
+</span>{
+&nbsp; &nbsp; Factory *fac = <span class="hljs-keyword">new</span> ConcreteFactory();
+
+&nbsp; &nbsp; <span class="hljs-comment">//ConcreteFactory通过参数延时决定具体到底创建哪一个Product的子类</span>
+&nbsp; &nbsp; fac-&gt;setFactoryMethod(<span class="hljs-number">3</span>);
+&nbsp; &nbsp; Product *pro = fac-&gt;CreateProduct();
+
+&nbsp; &nbsp; <span class="hljs-keyword">if</span> (pro) {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> pro;
+&nbsp; &nbsp; &nbsp; &nbsp; pro = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">if</span> (fac) {
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">delete</span> fac;
+&nbsp; &nbsp; &nbsp; &nbsp; fac = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><h1 id="_label3">2.2 抽象工厂</h1><pre class="ql-syntax" spellcheck="false"><span class="hljs-meta">#include &lt;iostream&gt;</span>
+<span class="hljs-comment">//using namespace std;</span>
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cout</span>;
+<span class="hljs-keyword">using</span> <span class="hljs-built_in">std</span>::<span class="hljs-built_in">endl</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractProductA</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~AbstractProductA() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" AbstractProductA"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractProductA() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~AbstractProductA"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractProductB</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~AbstractProductB() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~AbstractProductB"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractProductB() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" AbstractProductB"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProductA1</span> :</span> <span class="hljs-keyword">public</span> AbstractProductA
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ProductA1() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ProductA1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ProductA1(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ProductA1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProductA2</span> :</span> <span class="hljs-keyword">public</span> AbstractProductA
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ProductA2() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ProductA2"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ProductA2(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ProductA2"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProductB1</span> :</span> <span class="hljs-keyword">public</span> AbstractProductB
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ProductB1() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ProductB1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ProductB1(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ProductB1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProductB2</span> :</span> <span class="hljs-keyword">public</span> AbstractProductB
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ProductB2() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ProductB2"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ProductB2(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ProductB2"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+};
+
+<span class="hljs-comment">// factory</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AbstractFactory</span>
+{</span>
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> AbstractProductA * <span class="hljs-title">CreateProductA</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function"><span class="hljs-keyword">virtual</span> AbstractProductB * <span class="hljs-title">CreateProductB</span><span class="hljs-params">()</span> </span>= <span class="hljs-number">0</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">virtual</span> ~AbstractFactory(){
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> (pointA1) <span class="hljs-keyword">delete</span> pointA1;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> (pointA2) <span class="hljs-keyword">delete</span> pointA2;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> (pointB1) <span class="hljs-keyword">delete</span> pointB1;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">if</span> (pointB2) <span class="hljs-keyword">delete</span> pointB2;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; <span class="hljs-keyword">protected</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractFactory(){
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pointA1 = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pointA2 = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pointB1 = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pointB2 = <span class="hljs-literal">NULL</span>;
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractProductA * pointA1;
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractProductA * pointA2;
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractProductB * pointB1;
+&nbsp; &nbsp; &nbsp; &nbsp; AbstractProductB * pointB2;
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteFactory1</span> :</span> <span class="hljs-keyword">public</span> AbstractFactory
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteFactory1() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcreteFactory1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteFactory1(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ConcreteFactory1"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">AbstractProductA * <span class="hljs-title">CreateProductA</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> pointA1 = <span class="hljs-keyword">new</span> ProductA1();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">AbstractProductB * <span class="hljs-title">CreateProductB</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> pointB1 = <span class="hljs-keyword">new</span> ProductB1();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+};
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ConcreteFactory2</span> :</span> <span class="hljs-keyword">public</span> AbstractFactory
+{
+&nbsp; &nbsp; <span class="hljs-keyword">public</span>:
+&nbsp; &nbsp; &nbsp; &nbsp; ConcreteFactory2() {<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">" ConcreteFactory2"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; ~ConcreteFactory2(){<span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"~ConcreteFactory2"</span>&lt;&lt;<span class="hljs-built_in">endl</span>;}
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">AbstractProductA * <span class="hljs-title">CreateProductA</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> pointA2 = <span class="hljs-keyword">new</span> ProductA2();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+&nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-function">AbstractProductB * <span class="hljs-title">CreateProductB</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span class="hljs-keyword">return</span> pointB2 = <span class="hljs-keyword">new</span> ProductB2();
+&nbsp; &nbsp; &nbsp; &nbsp; }
+};
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+&nbsp; &nbsp; AbstractFactory *cf1 = <span class="hljs-keyword">new</span> ConcreteFactory1();
+&nbsp; &nbsp; cf1-&gt;CreateProductA();
+&nbsp; &nbsp; cf1-&gt;CreateProductB();
+
+&nbsp; &nbsp; AbstractFactory *cf2 = <span class="hljs-keyword">new</span> ConcreteFactory2();
+&nbsp; &nbsp; cf2-&gt;CreateProductA();
+&nbsp; &nbsp; cf2-&gt;CreateProductB();
+
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> cf1;
+&nbsp; &nbsp; <span class="hljs-keyword">delete</span> cf2;
+&nbsp; &nbsp; <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</pre><p><br></p>
